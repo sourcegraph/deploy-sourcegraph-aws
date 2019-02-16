@@ -7,3 +7,6 @@
 
 # .tfvars files
 *.tfvars
+
+.idea
+aws_auth.sh

@@ -1,0 +1,12 @@
+# Required
+
+availability_zone = ""
+key_name = ""
+
+# Optional
+
+#vpc_id = ""
+#subnet_id = ""
+#ssh_cidr = ""
+#app_name = ""
+#instance_type = ""
