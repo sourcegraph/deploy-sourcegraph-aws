@@ -1,3 +1,8 @@
+# Configuration
+#
+# This plan has no required variables but is highly configurable.
+#
+
 #ssh_cidr = ""
 #vpc_id = ""
 #subnet_id = ""
