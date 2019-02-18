@@ -2,8 +2,23 @@ provider "aws" {}
 
 
 # ------------------------------------------
-# DATA SOURCES
+# DATA SOURCES AND LOCALS
 # ------------------------------------------
+
+# Get the external IP address of the system executing this plan
+data "http" "workstation_cidr" {
+  url = "http://ipv4.icanhazip.com"
+}
+
+# We need the list of availability zones if a value for the  `subnet_id` var was not supplied.
+data "aws_subnet_ids" "this" {
+  vpc_id = "${local.vpc_id}"
+}
+
+locals {
+  workstation_cidr = "${chomp(data.http.workstation_cidr.body)}/32"
+  vpc_id = "${coalesce(var.vpc_id, aws_default_vpc.this.id)}"
+}
 
 # Get the latest Amazon  Linux 2 AMI
 data "aws_ami" "this" {
@@ -30,33 +45,16 @@ data "aws_ami" "this" {
   }
 }
 
-# Get the external IP address of the workstation this plan is run on
-data "http" "workstation_cidr" {
-  url = "http://ipv4.icanhazip.com"
-}
-
-# We need the list of availability zones in this region in case a `subnet_id` value was not supplied.
-data "aws_availability_zones" "available" {}
-
 # ------------------------------------------
 # NETWORKING
 # ------------------------------------------
 
-
-# Override with variable or hardcoded value if necessary
-locals {
-  workstation_cidr = "${chomp(data.http.workstation_cidr.body)}/32"
-}
-
-# Get the default subnet in the first availability zone unless in case a subnet_id was not specified
-resource "aws_default_subnet" "this" {
-  availability_zone = "element(data.aws_availability_zones.available.names, 0))}"
-}
+resource "aws_default_vpc" "this" {}
 
 resource "aws_security_group" "this" {
   name = "${var.app_name}-sg"
   description = "Allow all inbound traffic to 22 and 8080"
-  vpc_id = "${coalesce(var.vpc_id, aws_default_subnet.this.vpc_id)}"
+  vpc_id = "${local.vpc_id}"
 
   ingress {
     from_port = 22
@@ -153,7 +151,6 @@ resource "aws_iam_instance_profile" "this" {
 # EC2 INSTANCE
 # ------------------------------------------
 
-
 # Create the key pair if a value for `public_key` was supplied
 resource "aws_key_pair" "this" {
   count = "${var.public_key == "" ? 0 : 1}"
@@ -166,7 +163,7 @@ resource "aws_instance" "this" {
   instance_type = "${var.instance_type}"
   vpc_security_group_ids = [
     "${aws_security_group.this.id}"]
-  subnet_id = "${coalesce(var.subnet_id, aws_default_subnet.this.id)}"
+  subnet_id = "${coalesce(var.subnet_id, element(data.aws_subnet_ids.this.ids, 0))}"
   key_name = "${var.key_name}"
 
   iam_instance_profile = "${aws_iam_instance_profile.this.name}"

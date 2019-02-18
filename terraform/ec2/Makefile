@@ -1,3 +1,5 @@
+SHELL := /bin/bash
+
 init:
 	terraform init -upgrade
 
@@ -14,4 +16,4 @@ destroy:
 	terraform destroy -force -var-file terraform.tfvars
 
 output:
-	terraform output -json
+	terraform output
