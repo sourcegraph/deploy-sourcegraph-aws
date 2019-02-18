@@ -10,14 +10,19 @@ data "http" "workstation_cidr" {
   url = "http://ipv4.icanhazip.com"
 }
 
-# We need the list of availability zones if a value for the  `subnet_id` var was not supplied.
-data "aws_subnet_ids" "this" {
-  vpc_id = "${local.vpc_id}"
+data "aws_vpc" "default" {
+  default = "${var.vpc_id == "" ? true : false}"
+  id      = "${var.vpc_id}"
 }
 
 locals {
   workstation_cidr = "${chomp(data.http.workstation_cidr.body)}/32"
-  vpc_id = "${coalesce(var.vpc_id, aws_default_vpc.this.id)}"
+  vpc_id = "${data.aws_vpc.default.id}"
+}
+
+# We need the list of availability zones if a value for the  `subnet_id` var was not supplied.
+data "aws_subnet_ids" "this" {
+  vpc_id = "${local.vpc_id}"
 }
 
 # Get the latest Amazon  Linux 2 AMI
@@ -48,8 +53,6 @@ data "aws_ami" "this" {
 # ------------------------------------------
 # NETWORKING
 # ------------------------------------------
-
-resource "aws_default_vpc" "this" {}
 
 resource "aws_security_group" "this" {
   name = "${var.app_name}-sg"
