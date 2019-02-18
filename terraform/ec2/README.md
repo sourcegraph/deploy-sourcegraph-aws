@@ -1,4 +1,5 @@
 # Deploying to a single EC2 instance
 
-See the [Terraform README](../README.md) for Terraform configuration and usage.
+## Usage
 
+Clone this repo, then follow the instructions in the  [Terraform README](../README.md) which covers configuration and usage for the EC2 and other Terraform plans.
