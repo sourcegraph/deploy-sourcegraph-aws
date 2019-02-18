@@ -1,10 +1,13 @@
 init:
 	terraform init -upgrade
 
-plan:
+validate:
+	terraform validate -var-file terraform.tfvars
+
+plan: validate
 	terraform plan -var-file terraform.tfvars
 
-apply:
+apply: validate
 	terraform apply -auto-approve -var-file terraform.tfvars
 
 destroy:

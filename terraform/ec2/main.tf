@@ -2,26 +2,56 @@ provider "aws" {}
 
 
 # ------------------------------------------
-# NETWORK
+# DATA SOURCES
 # ------------------------------------------
 
+# Get the latest Amazon  Linux 2 AMI
+data "aws_ami" "this" {
+  most_recent = true
+
+
+  filter {
+    name = "owner-alias"
+    values = [
+      "amazon"]
+  }
+
+
+  filter {
+    name = "name"
+    values = [
+      "amzn2-ami-hvm*"]
+  }
+
+  filter {
+    name = "architecture"
+    values = [
+      "x86_64"]
+  }
+}
+
+# Get the external IP address of the workstation this plan is run on
 data "http" "workstation_cidr" {
   url = "http://ipv4.icanhazip.com"
 }
+
+# We need the list of availability zones in this region in case a `subnet_id` value was not supplied.
+data "aws_availability_zones" "available" {}
+
+# ------------------------------------------
+# NETWORKING
+# ------------------------------------------
+
 
 # Override with variable or hardcoded value if necessary
 locals {
   workstation_cidr = "${chomp(data.http.workstation_cidr.body)}/32"
 }
 
+# Get the default subnet in the first availability zone unless in case a subnet_id was not specified
 resource "aws_default_subnet" "this" {
-  availability_zone = "${var.availability_zone}"
+  availability_zone = "element(data.aws_availability_zones.available.names, 0))}"
 }
-
-
-# ------------------------------------------
-# SECURITY GROUP
-# ------------------------------------------
 
 resource "aws_security_group" "this" {
   name = "${var.app_name}-sg"
@@ -91,7 +121,7 @@ resource "aws_security_group" "this" {
 
 
 # ------------------------------------------
-# IAM POLICY AND ROLE
+# IAM POLICY AND ROLE FOR METRICS
 # ------------------------------------------
 
 resource "aws_iam_policy" "this" {
@@ -123,28 +153,12 @@ resource "aws_iam_instance_profile" "this" {
 # EC2 INSTANCE
 # ------------------------------------------
 
-data "aws_ami" "this" {
-  most_recent = true
 
-
-  filter {
-    name = "owner-alias"
-    values = [
-      "amazon"]
-  }
-
-
-  filter {
-    name = "name"
-    values = [
-      "amzn2-ami-hvm*"]
-  }
-
-  filter {
-    name = "architecture"
-    values = [
-      "x86_64"]
-  }
+# Create the key pair if a value for `public_key` was supplied
+resource "aws_key_pair" "this" {
+  count = "${var.public_key == "" ? 0 : 1}"
+  key_name   = "${var.key_name}"
+  public_key = "${var.public_key}"
 }
 
 resource "aws_instance" "this" {

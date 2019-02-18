@@ -1,12 +1,11 @@
 # Required
-
-availability_zone = ""
 key_name = ""
 
 # Optional
-
+#availability_zone = ""
+#ssh_cidr = ""
 #vpc_id = ""
 #subnet_id = ""
-#ssh_cidr = ""
+#public_key = ""
 #app_name = ""
 #instance_type = ""
