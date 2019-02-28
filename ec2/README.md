@@ -1,14 +1,12 @@
 # Deploying Sourcegraph to a single EC2 instance
 
-This EC2 Terraform plan is easy to use as there are no required variables, although the `terraform.tfvars` file still needs to exist.
+This plan easy to use as there are no required variables, although the `terraform.tfvars` file still needs to exist.
 
-The most likely variable you **will* want to specify is `key_name` as without this, you can't SSH to the instance.
+The most likely variable you will want to specify is `key_name` as without this, you can't SSH to the instance.
 
 Reading `vars.tf` and `main.tf` will help explain how the optional variables are used.
 
-## Configuration
-
-If no `vpc_id` value is set, the default VPC will be used but if the default VPC has been deleted, then you'll need to specify a value for `vpc_id`
+> NOTE: If you've deleted the default VPC in the targeted region, you'll need to supply a value for `vpc_id`.
 
 ## Troubleshooting
 
