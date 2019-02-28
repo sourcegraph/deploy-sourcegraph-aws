@@ -28,8 +28,12 @@ variable "app_name" {
   description = "Sets the (tag) name of the instance"
 }
 
-
 variable "instance_type" {
   default = "t2.large"
-  description = "Override the default instance type"
+  description = "Set the default instance type"
+}
+
+variable "delete_root_volume_on_termination" {
+  default = true
+  description = "Whether to keep the EBS root volume when the instance is terminated"
 }

@@ -10,3 +10,4 @@
 #public_key = ""
 #app_name = ""
 #instance_type = ""
+#delete_root_volume_on_termination = true
