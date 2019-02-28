@@ -11,7 +11,7 @@
 
 ## AWS VPC
 
-If you've deleted the default VPC in the targeted region, you need to supply values for `vpc_id` and `subnet_id` in the `terraform.tfvars` file.
+If you've deleted the default VPC in the targeted region, you'll need to supply a value for `vpc_id`.
 
 ## Authentication
 
@@ -32,7 +32,5 @@ Each plan has a `Makefile` which covers the common use-cases:
 - `make apply`
 - `make destroy`
 - `make output`
-
-For example, in the `terraform/ec2` directory run `make plan` instead of `terraform plan -var-file terraform.tfvars`.
 
 > NOTE: You are not required to use make, it's just included to make things easy and document what parameters to pass to Terraform.
