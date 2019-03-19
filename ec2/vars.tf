@@ -1,6 +1,6 @@
 variable "ssh_cidr" {
   default = ""
-  description = "Is the external IP address of the workstation/gateway and used on the port 22 security group rule"
+  description = "By default, port 22 access is restricted to the external IP address of the machine running Terraform for restrictive access"
 }
 
 variable "vpc_id" {

@@ -149,7 +149,7 @@ resource "aws_iam_instance_profile" "this" {
 
 # Create the key pair if a value for `public_key` was supplied
 resource "aws_key_pair" "this" {
-  count = "${var.public_key == "" ? 0 : 1}"
+  count = "${var.key_name == "" ? 0 : 1}"
   key_name   = "${var.key_name}"
   public_key = "${var.public_key}"
 }
@@ -169,7 +169,7 @@ resource "aws_instance" "this" {
     volume_type = "gp2"
     delete_on_termination = "${var.delete_root_volume_on_termination}"
   }
-
+  
   user_data = "${file("resources/user-data.sh")}"
 
   tags {
