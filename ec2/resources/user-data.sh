@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-export SOURCEGRAPH_VERSION=3.1.1
+export SOURCEGRAPH_VERSION=3.2.0
 
 export USER_HOME=/home/ec2-user
 export SOURCEGRAPH_CONFIG=/etc/sourcegraph
