@@ -56,7 +56,7 @@ data "aws_ami" "this" {
 
 resource "aws_security_group" "this" {
   name = "${var.app_name}-sg"
-  description = "Allow all inbound traffic on 80 and 443
+  description = "Allow all inbound traffic on 80 and 443"
   vpc_id = "${local.vpc_id}"
 
   ingress {
