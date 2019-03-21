@@ -1,10 +1,14 @@
-# Deploying Sourcegraph to a single EC2 instance
+# Deploying Sourcegraph on EC2
 
-This plan easy to use as there are no required variables, although the `terraform.tfvars` file still needs to exist.
+This Terraform plan deploys Sourcegraph on an EC2 instance with SSL using a self-signed certificate.
 
-The most likely variable you will want to specify is `key_name` as without this, you can't SSH to the instance.
+## Configuration
 
-Reading `vars.tf` and `main.tf` will help explain how the optional variables are used.
+There are technically no required variables although the `terraform.tfvars` file still needs to exist.
+
+The most likely variable you will want to specify is `key_name` and or `public_key` as without this, you can't SSH to the instance.
+
+Take a look at `vars.tf` and `main.tf` which documents the variables used and what resources are createrd.
 
 > NOTE: If you've deleted the default VPC in the targeted region, you'll need to supply a value for `vpc_id`.
 

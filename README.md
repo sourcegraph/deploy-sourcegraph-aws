@@ -6,14 +6,17 @@
 
 ## Prerequisites
 
-- Terraform
-- Make
+The following is required to execute these Terraform plans:
+
+- Make (installed if you're macOS and Linux)
+- [Terraform](https://learn.hashicorp.com/terraform/getting-started/install.html)
+- [mkcert](https://github.com/FiloSottile/mkcert) (optional but required for self-signed cert validation)
 
 ## AWS VPC
 
-If you've deleted the default VPC in the targeted region, you'll need to supply a value for `vpc_id`.
+If the region does not have a default VPC, `vpc_id` must be set.
 
-## Authentication
+## AWS Authentication
 
 You can authenticate with AWS using one of the methods described in the [Terraform AWS authentication docs](https://www.terraform.io/docs/providers/aws/#environment-variables).
 

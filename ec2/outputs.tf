@@ -14,6 +14,6 @@ output "SSH" {
   value = "${format("ssh ec2-user@%s", aws_instance.this.public_dns)}"
 }
 
-output "Sourcegtraph CA Root files (downlaod and install)" {
+output "Command to have your browser trust the self-signed certificate" {
   value = "${format("scp ec2-user@%s", aws_instance.this.public_dns)}:~/sourcegraph-root-ca.zip ./ && unzip sourcegraph-root-ca.zip && mv ./rootCA* \"$(mkcert -CAROOT)\" && mkcert -install"
 }

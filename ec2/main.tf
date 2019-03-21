@@ -1,11 +1,5 @@
 provider "aws" {}
 
-# TODO: Add var for disk size (30Gb)
-# TODO: How can admins protect the EBS volume
-# Format, mount
-
-# TODO: Add flag for specifying an EBS volume
-
 # ------------------------------------------
 # DATA SOURCES AND LOCALS
 # ------------------------------------------
@@ -62,7 +56,7 @@ data "aws_ami" "this" {
 
 resource "aws_security_group" "this" {
   name = "${var.app_name}-sg"
-  description = "Allow all inbound traffic to 22 and 8080"
+  description = "Allow all inbound traffic on 80 and 443"
   vpc_id = "${local.vpc_id}"
 
   ingress {
@@ -92,14 +86,6 @@ resource "aws_security_group" "this" {
   ingress {
     from_port = 443
     to_port = 443
-    protocol = "tcp"
-    cidr_blocks = [
-      "0.0.0.0/0"]
-  }
-
-  ingress {
-    from_port = 7080
-    to_port = 7080
     protocol = "tcp"
     cidr_blocks = [
       "0.0.0.0/0"]

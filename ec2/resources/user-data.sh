@@ -65,15 +65,15 @@ cp ${SOURCEGRAPH_CONFIG}/sourcegraph.crt ${SOURCEGRAPH_CONFIG}/management/cert.p
 cp ${SOURCEGRAPH_CONFIG}/sourcegraph.key ${SOURCEGRAPH_CONFIG}/management/key.pem
 
 # Zip the CA Root key and certificate for easy downloading
-zip -j ${USER_HOME}/sourcegraph-root-ca.zip ${SOURCEGRAPH_CONFIG}/root*
-chown ec2-user ${USER_HOME}/sourcegraph-root-ca.zip
+sudo zip -j ${USER_HOME}/sourcegraph-root-ca.zip ${SOURCEGRAPH_CONFIG}/root*
+sudo chown ec2-user ${USER_HOME}/sourcegraph-root-ca.zip
 
 # Start Sourcegraph script
 cat > ${USER_HOME}/sourcegraph-start <<EOL
 #!/usr/bin/env bash
 
 # Change version number, then run this script to upgrade
-SOURCEGRAPH_VERSION=3.1.1
+SOURCEGRAPH_VERSION=${SOURCEGRAPH_VERSION}
 
 # Disable exit on non 0 as these may fail, which is ok 
 # because failure will only occur if the network exists
@@ -97,14 +97,14 @@ docker container run \\
     --hostname sourcegraph \\
     --network-alias sourcegraph \\
     \\
-    -p 7080:7080 \\
+    -p 80:7080 \\
     -p 443:7080 \\
     -p 2633:2633 \\
     \\
     -v ${SOURCEGRAPH_CONFIG}:${SOURCEGRAPH_CONFIG} \\
     -v ${SOURCEGRAPH_DATA}:${SOURCEGRAPH_DATA} \\
     \\
-    sourcegraph/server:3.1.1
+    sourcegraph/server:${SOURCEGRAPH_VERSION}
 EOL
 
 # Stop Sourcegraph script
