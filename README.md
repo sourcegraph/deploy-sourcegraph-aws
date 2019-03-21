@@ -1,4 +1,4 @@
-# Deploy Sourcegraph to AWS using Terraform
+# Deploy Sourcegraph on AWS using Terraform
 
 ![Deploy Sourcegraph on AWS demo gif](https://user-images.githubusercontent.com/46826578/54791121-bfe46d80-4bf5-11e9-81c0-663599183b11.gif)
 
