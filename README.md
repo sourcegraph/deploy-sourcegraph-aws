@@ -1,5 +1,7 @@
 # Deploy Sourcegraph to AWS using Terraform
 
+![Deploy Sourcegraph on AWS demo gif](https://user-images.githubusercontent.com/46826578/54791121-bfe46d80-4bf5-11e9-81c0-663599183b11.gif)
+
 Deploying Sourcegraph on AWS now takes less than 5 minutes and a couple of commands with TLS preconfigured.
 
 > NOTE: This guide assumes knowledge and experience using [AWS IAM](https://docs.aws.amazon.com/iam/index.html#lang/en_us) and Terraform.
