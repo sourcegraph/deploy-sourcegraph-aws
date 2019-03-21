@@ -48,8 +48,8 @@ If the instance has no public IP address, get the subnet id the instance belongs
 1. VPC
 1. Subnets
 1. Select the subnet 
-1. > Actions: Modify auto-assign IP settings
-1. > check "Auto-assign IPv4" and save
+1. Actions: Modify auto-assign IP settings
+1. check "Auto-assign IPv4" and save
 1. Run `make destroy` to remove the current instance.
 1. Run `make deploy` again to get a public hostname and IP
 
