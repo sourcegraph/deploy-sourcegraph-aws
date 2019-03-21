@@ -1,7 +1,5 @@
 # Deploy Sourcegraph to AWS using Terraform
 
-Deploying Sourcegraph on AWS is now simple thanks to Terraform and the EC2 plan.
-
 > NOTE: This guide assumes knowledge and experience using [AWS IAM](https://docs.aws.amazon.com/iam/index.html#lang/en_us) and Terraform.
 
 ## Prerequisites
