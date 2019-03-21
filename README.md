@@ -2,15 +2,17 @@
 
 ![Deploy Sourcegraph on AWS demo gif](https://user-images.githubusercontent.com/46826578/54791121-bfe46d80-4bf5-11e9-81c0-663599183b11.gif)
 
-Deploying Sourcegraph on AWS now takes less than 5 minutes and a couple of commands with TLS preconfigured.
+Deploying Sourcegraph on AWS now takes less than 5 minutes and a single command. Open a terminal, cd to the `ec2` directory, then run:
 
-> NOTE: This guide assumes knowledge and experience using [AWS IAM](https://docs.aws.amazon.com/iam/index.html#lang/en_us) and Terraform.
+```make deploy```
 
 ## Prerequisites
 
 - Make (installed if you're macOS and Linux)
 - [Terraform](https://learn.hashicorp.com/terraform/getting-started/install.html)
 - [mkcert](https://github.com/FiloSottile/mkcert) (optional but required for self-signed cert validation)
+
+Also, a basic level of knowledge and experience using [AWS IAM](https://docs.aws.amazon.com/iam/index.html#lang/en_us) and [Terraform](https://www.terraform.io/intro/index.html) is required.
 
 ## AWS requirements
 
