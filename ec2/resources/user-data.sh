@@ -73,7 +73,7 @@ cat > ${USER_HOME}/sourcegraph-start <<EOL
 #!/usr/bin/env bash
 
 # Change version number, then run this script to upgrade
-SOURCEGRAPH_VERSION=3.1.1
+SOURCEGRAPH_VERSION=${SOURCEGRAPH_VERSION}
 
 # Disable exit on non 0 as these may fail, which is ok 
 # because failure will only occur if the network exists
@@ -104,7 +104,7 @@ docker container run \\
     -v ${SOURCEGRAPH_CONFIG}:${SOURCEGRAPH_CONFIG} \\
     -v ${SOURCEGRAPH_DATA}:${SOURCEGRAPH_DATA} \\
     \\
-    sourcegraph/server:3.1.1
+    sourcegraph/server:${SOURCEGRAPH_VERSION}
 EOL
 
 # Stop Sourcegraph script
