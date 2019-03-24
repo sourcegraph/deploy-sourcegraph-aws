@@ -27,4 +27,4 @@ Error: Error refreshing state: 1 error(s) occurred:
 
 ```
 
-It means you don't have a default VPC in the currently specified region. Either choose a different region that has a default VPC or provide a`vpc_id` value in `terraform.tfvars`.
+It means you don't have a default VPC in the currently specified region. Either choose a different region that has a default VPC or provide a `vpc_id` value in `terraform.tfvars`.
