@@ -112,7 +112,7 @@ cat > ${USER_HOME}/sourcegraph-stop <<EOL
 #!/usr/bin/env bash
 
 echo "[info]:  Stopping Sourcegraph" 
-docker container stop -f sourcegraph > /dev/null 2>&1 docker container stop -f sourcegraph 
+docker container stop sourcegraph > /dev/null 2>&1 docker container rm sourcegraph 
 EOL
 
 chmod +x ${USER_HOME}/sourcegraph-st*
