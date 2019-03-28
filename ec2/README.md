@@ -10,7 +10,7 @@ This plan will create:
 - An EC2 instance
 - Security group with inbound ports `22`, `80`, `443`, and `2633` (for the management console) exposed.
 - IAM role and and IAM instance profile
-- (optionally) an `key_pair` (see [plan configuration](#plan-configuration))
+- Depending upon configuration, a `key_pair` (see [plan configuration](#terraform-plan-configuration))
 
 ## Terraform AWS authentication
 
