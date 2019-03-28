@@ -135,7 +135,7 @@ resource "aws_iam_instance_profile" "this" {
 
 # Create the key pair if a value for `public_key` was supplied
 resource "aws_key_pair" "this" {
-  count = "${var.key_name == "" ? 0 : 1}"
+  count = "${var.public_key == "" ? 0 : 1}"
   key_name   = "${var.key_name}"
   public_key = "${var.public_key}"
 }
