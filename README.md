@@ -2,6 +2,8 @@
 
 Deploying Sourcegraph on AWS now takes less than 5 minutes and a couple of commands.
 
+![Deploy Sourcegraph on AWS demo gif](https://storage.googleapis.com/sourcegraph-assets/SourcegraphAWSTerraform.gif)
+
 ## Prerequisites
 
 - Make (installed if you're macOS and Linux)

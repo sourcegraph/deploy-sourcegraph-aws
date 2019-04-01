@@ -1,7 +1,7 @@
 # Deploying Sourcegraph on EC2
 
-![Deploy Sourcegraph on AWS demo gif](https://user-images.githubusercontent.com/46826578/54791121-bfe46d80-4bf5-11e9-81c0-663599183b11.gif)
-
+![Deploy Sourcegraph on AWS demo gif](https://storage.googleapis.com/sourcegraph-assets/SourcegraphAWSTerraform.gif)
+[View on Vimeo.com](https://vimeo.com/327771524)
 
 This Terraform plan deploys Sourcegraph to an EC2 instance with SSL using a self-signed certificate.
 
