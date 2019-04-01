@@ -2,7 +2,7 @@
 
 Deploying Sourcegraph on AWS now takes less than 5 minutes and a couple of commands.
 
-![Deploy Sourcegraph on AWS demo gif](https://storage.googleapis.com/sourcegraph-assets/SourcegraphAWSTerraform.gif)
+![Deploy Sourcegraph on AWS demo gif](https://user-images.githubusercontent.com/133014/55364917-59820980-5497-11e9-89aa-e9bfc0d3f0bc.gif)
 
 ## Prerequisites
 
@@ -16,5 +16,6 @@ Deploying Sourcegraph on AWS now takes less than 5 minutes and a couple of comma
 
 - [EC2](ec2/README.md)
 
-More will be added in the future.
+> NOTE: More will be added in the future. 
 
+[Create an issue](https://github.com/sourcegraph/deploy-sourcegraph-aws/issues/new) if you have a specific Terraform plan you'd like to see here.

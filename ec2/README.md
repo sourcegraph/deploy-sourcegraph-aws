@@ -1,16 +1,25 @@
 # Deploying Sourcegraph on EC2
 
-![Deploy Sourcegraph on AWS demo gif](https://storage.googleapis.com/sourcegraph-assets/SourcegraphAWSTerraform.gif)
-[View on Vimeo.com](https://vimeo.com/327771524)
-
 This Terraform plan deploys Sourcegraph to an EC2 instance with SSL using a self-signed certificate.
 
 This plan will create:
 
 - An EC2 instance
-- Security group with inbound ports `22`, `80`, `443`, and `2633` (for the management console) exposed.
+- Security group with inbound ports `22`, `80`, `443`, and `2633` (for the management console) exposed
 - IAM role and and IAM instance profile
-- Depending upon configuration, a `key_pair` (see [plan configuration](#terraform-plan-configuration))
+- Depending upon configuration, a `key pair` (see [plan configuration](#terraform-plan-configuration))
+
+See how it works by [watching this screencast on Vimeo.com](https://vimeo.com/327771524).
+
+[![Sourcegraph on AWS using Terraform demo screencast](https://user-images.githubusercontent.com/133014/55365302-dcf02a80-5498-11e9-9bb8-f5ba4bfdb90d.png)](https://vimeo.com/327771524)
+
+## Prerequisites
+
+- Make (installed if you're macOS and Linux)
+- [Terraform](https://learn.hashicorp.com/terraform/getting-started/install.html)
+- [mkcert](https://github.com/FiloSottile/mkcert) (optional but required for self-signed cert validation)
+
+> NOTE: A basic level of knowledge and experience using [AWS IAM](https://docs.aws.amazon.com/iam/index.html#lang/en_us) and [Terraform](https://www.terraform.io/intro/index.html) is required.
 
 ## Terraform AWS authentication
 
