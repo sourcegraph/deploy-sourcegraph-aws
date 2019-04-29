@@ -37,7 +37,15 @@ You'll likely set `key_name` (if you already have a key pair), or `public_key` a
 
 ## Commands
 
-The `Makefile` has commands to cover the most common use-cases:
+The `Makefile` has commands to cover the most common use-cases. The easiest way to create your Droplet is to run:
+
+```bash
+make deploy
+```
+
+This will create all resources and and poll the server to let you know when Sourcegraph is ready.
+
+Other commands include:
 
 - `make init`: Download the required packages based on the resources used
 - `make plan`: Do we have everything required to deploy?
@@ -46,7 +54,7 @@ The `Makefile` has commands to cover the most common use-cases:
 - `make output`: Display the same output as when `make apply` completes
 - `make destroy`: Removes all created from resources from AWS
 
-> NOTE: You are not required to use `make`, it's just included to make things easy and document what parameters to pass to Terraform.
+> WARNING: `make destroy` will destroy the Droplet so back-up the `/etc/sourcegraph` and `/var/opt/sourcegraph` directories first.
 
 ## Troubleshooting
 
