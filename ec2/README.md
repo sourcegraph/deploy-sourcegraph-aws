@@ -47,14 +47,23 @@ This will create all resources and and poll the server to let you know when Sour
 
 Other commands include:
 
-- `make init`: Download the required packages based on the resources used
-- `make plan`: Do we have everything required to deploy?
+- `make init`: Download the required Terraform provider packages
+- `make plan`: Anything to add, remove or change?
 - `make apply`: Create the EC2 instance and other required resources
-- `make sourcegraph`: Wait for Sourcegraph accept connections
+- `make sourcegraph`: Wait for Sourcegraph to be ready to accept connections
 - `make output`: Display the same output as when `make apply` completes
-- `make destroy`: Removes all created from resources from AWS
+- `make destroy`: Removes all created from resources
 
 > WARNING: `make destroy` will destroy the Droplet so back-up the `/etc/sourcegraph` and `/var/opt/sourcegraph` directories first.
+
+## Upgrading Sourcegraph
+
+To upgrade Sourcegraph:
+
+1. SSH into the EC2 instance
+1. Run `./sourcegraph-upgrade`
+
+The newer Docker image will be pulled and Sourcegraph will be restarted.
 
 ## Troubleshooting
 

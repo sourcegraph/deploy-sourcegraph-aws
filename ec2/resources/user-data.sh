@@ -67,7 +67,6 @@ cp ${SOURCEGRAPH_CONFIG}/sourcegraph.key ${SOURCEGRAPH_CONFIG}/management/key.pe
 sudo zip -j ${USER_HOME}/sourcegraph-root-ca.zip ${SOURCEGRAPH_CONFIG}/root*
 sudo chown ec2-user ${USER_HOME}/sourcegraph-root-ca.zip
 
-# Start Sourcegraph script
 cat > ${USER_HOME}/sourcegraph-start <<EOL
 #!/usr/bin/env bash
 
@@ -84,7 +83,7 @@ docker container rm -f sourcegraph > /dev/null 2>&1
 # Enable exit on non 0
 set -e
 
-echo "[info]:  Running Sourcegraph ${SOURCEGRAPH_VERSION}"
+echo "[info]:  Running Sourcegraph \${SOURCEGRAPH_VERSION}"
 
 # Recommend removing listening on port 7080 once SSL is configured
 docker container run \\
@@ -103,16 +102,27 @@ docker container run \\
     -v ${SOURCEGRAPH_CONFIG}:${SOURCEGRAPH_CONFIG} \\
     -v ${SOURCEGRAPH_DATA}:${SOURCEGRAPH_DATA} \\
     \\
-    sourcegraph/server:${SOURCEGRAPH_VERSION}
+    sourcegraph/server:\${SOURCEGRAPH_VERSION}
 EOL
 
-# Stop Sourcegraph script
 cat > ${USER_HOME}/sourcegraph-stop <<EOL
 #!/usr/bin/env bash
 
 echo "[info]:  Stopping Sourcegraph" 
 docker container stop sourcegraph > /dev/null 2>&1 docker container rm sourcegraph 
 EOL
+
+cat > ${USER_HOME}/sourcegraph-upgrade <<EOL
+#!/usr/bin/env bash
+
+./sourcegraph-stop
+
+read -p "Sourcegraph version to upgrade to: " VERSION
+sed -i -E "s/SOURCEGRAPH_VERSION=[0-9\.]+/SOURCEGRAPH_VERSION=\$VERSION/g" ./sourcegraph-start
+
+./sourcegraph-start
+EOL
+
 
 chmod +x ${USER_HOME}/sourcegraph-st*
 ${USER_HOME}/sourcegraph-start
