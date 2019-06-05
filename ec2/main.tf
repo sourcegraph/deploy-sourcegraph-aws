@@ -151,7 +151,7 @@ resource "aws_instance" "this" {
   iam_instance_profile = "${aws_iam_instance_profile.this.name}"
 
   root_block_device {
-    volume_size = 30
+    volume_size = 200
     volume_type = "gp2"
     delete_on_termination = "${var.delete_root_volume_on_termination}"
   }
