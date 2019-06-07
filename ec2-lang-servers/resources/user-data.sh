@@ -286,7 +286,7 @@ chmod +x ${USER_HOME}/update-lang-servers
 # TODO: Add a cronjob that runs the image pull script nightly
 # echo $(crontab -l ; echo '0 0 * * * /home/ec2-user/update-lang-servers') | crontab -
 
-cd ${USER_HOME} && docker-compose up
+cd ${USER_HOME} && docker-compose up --detach
 
 # In case this script is used to generate a AWS marketplace image, truncate the `global_state` 
 # db table so a unique site_id will be generated upon launch.
