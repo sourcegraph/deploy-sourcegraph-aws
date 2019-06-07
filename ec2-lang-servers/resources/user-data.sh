@@ -10,6 +10,7 @@ export CAROOT=${SOURCEGRAPH_CONFIG}
 export MKCERT_VERSION=1.3.0 # https://github.com/FiloSottile/mkcert/releases
 export PUBLIC_HOSTNAME=$(curl http://169.254.169.254/latest/meta-data/public-hostname)
 export IP_ADDRESS=$(echo $(hostname -I) | awk '{print $1;}')
+export LANG_SERVER_PASS=$(echo -n $(echo -n date | sha256sum | awk '{print $1}'))
 
 # Add Sourcegraph specific motd
 cat > /etc/update-motd.d/99-one-click <<EOL
@@ -47,7 +48,7 @@ Access the PostgreSQL db inside the Docker container by running: docker containe
 
 ## Language server configuration
 
-Add this Global settings to configure language servers for precise code intel.
+Add these properties to the root object in Global settings to configure supported language extensions for precise code intel.
 
   "go.serverUrl": "wss://sourcegraph:${LANG_SERVER_PASS}@${PUBLIC_HOSTNAME}/lang-go",
   "go.sourcegraphUrl": "http://sourcegraph:8080",
@@ -59,7 +60,7 @@ Add this Global settings to configure language servers for precise code intel.
   "python.serverUrl": "wss://sourcegraph:${LANG_SERVER_PASS}@${PUBLIC_HOSTNAME}/lang-python",
   "python.sourcegraphUrl": "http://sourcegraph:8080",
 
-A backup of this file is at ${SOURCEGRAPH_CONFIG}/languager-server-settings.json
+A backup of this file is at ${SOURCEGRAPH_CONFIG}/languager-server-settings.text
 
 ---
 
@@ -104,21 +105,21 @@ chmod a+x /usr/local/bin/mkcert
 mkcert -install
 mkcert -cert-file ${SOURCEGRAPH_CONFIG}/sourcegraph.crt -key-file ${SOURCEGRAPH_CONFIG}/sourcegraph.key ${PUBLIC_HOSTNAME}
 
-# Generate and set the password for the language servers
-export LANG_SERVER_PASS=$(echo -n $(echo -n date | sha256sum | awk '{print $1}'))
+# Generate the languager server settings
 htpasswd -b -c -B ${SOURCEGRAPH_CONFIG}/.lang_sever_htpasswd  sourcegraph ${LANG_SERVER_PASS}
 
-cat > ${SOURCEGRAPH_CONFIG}/languager-server-settings.json <<EOL
-{
-  "go.serverUrl": "wss://sourcegraph:${LANG_SERVER_PASS}@${PUBLIC_HOSTNAME}/lang-go",
-  "go.sourcegraphUrl": "http://sourcegraph:8080",
-  // 
-  "typescript.serverUrl": "wss://sourcegraph:${LANG_SERVER_PASS}@${PUBLIC_HOSTNAME}/lang-typescript",
-  "typescript.sourcegraphUrl": "http://sourcegraph:8080",
-  "typescript.progress": true,
-  //
-  "python.serverUrl": "wss://sourcegraph:${LANG_SERVER_PASS}@${PUBLIC_HOSTNAME}/lang-python",
-  "python.sourcegraphUrl": "http://sourcegraph:8080",
+cat > ${SOURCEGRAPH_CONFIG}/languager-server-settings.text <<EOL
+Add these properties to the root object in Global settings to configure supported language extensions for precise code intel.
+
+"go.serverUrl": "wss://sourcegraph:${LANG_SERVER_PASS}@${PUBLIC_HOSTNAME}/lang-go",
+"go.sourcegraphUrl": "http://sourcegraph:8080",
+// 
+"typescript.serverUrl": "wss://sourcegraph:${LANG_SERVER_PASS}@${PUBLIC_HOSTNAME}/lang-typescript",
+"typescript.sourcegraphUrl": "http://sourcegraph:8080",
+"typescript.progress": true,
+//
+"python.serverUrl": "wss://sourcegraph:${LANG_SERVER_PASS}@${PUBLIC_HOSTNAME}/lang-python",
+"python.sourcegraphUrl": "http://sourcegraph:8080"
 }
 EOL
 
