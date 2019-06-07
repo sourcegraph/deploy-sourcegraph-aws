@@ -71,12 +71,11 @@ yum install -y \
     docker \
     git \
     make \
-    nano \
-    python3 \
+    nano
 
 # Install Docker Compose
-pip3 install pip setuptools --upgrade
-pip3 install docker-compose
+curl -L "https://github.com/docker/compose/releases/download/1.24.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+chmod +x /usr/local/bin/docker-compose
 
 # Start docker service now and on boot
 systemctl enable --now --no-block docker

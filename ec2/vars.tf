@@ -34,6 +34,6 @@ variable "instance_type" {
 }
 
 variable "delete_root_volume_on_termination" {
-  default = true
+  default = false
   description = "Whether to keep the EBS root volume when the instance is terminated"
 }
