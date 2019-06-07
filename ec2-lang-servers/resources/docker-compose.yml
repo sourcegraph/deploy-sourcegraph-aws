@@ -1,0 +1,46 @@
+version: '3.7'
+services:
+  sourcegraph:
+    container_name: sourcegraph
+    image: sourcegraph/server:${SOURCEGRAPH_VERSION}
+    environment:
+      - SRC_LOG_LEVEL=dbug
+    ports:
+      - '80:7080'
+      - '443:7443'
+      - '2633:2633'
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
+    volumes:
+      - /etc/sourcegraph:/etc/sourcegraph
+      - /var/opt/sourcegraph:/var/opt/sourcegraph
+    networks:
+      - sourcegraph
+    depends_on:
+      - go-lang-server
+    restart: always
+
+  go-lang-server:
+    image: sourcegraph/lang-go:latest
+    ports:
+      - '127.0.0.1:4389:4389'
+    command: ['go-langserver', '-mode=websocket', '-addr=:4389', '-usebuildserver', '-usebinarypkgcache=false']
+    networks:
+      - sourcegraph
+    restart: always
+
+  ts-lang-server:
+    image: sourcegraph/lang-typescript:latest
+    networks:
+      - sourcegraph
+    restart: always
+
+  py-lang-server:
+    image: sourcegraph/lang-python:latest
+    networks:
+      - sourcegraph
+
+networks:
+  sourcegraph:
