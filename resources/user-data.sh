@@ -7,57 +7,9 @@ export SOURCEGRAPH_DATA=/var/opt/sourcegraph
 export PATH=$PATH:/usr/local/bin
 export DEBIAN_FRONTEND=noninteractive
 export CAROOT=${SOURCEGRAPH_CONFIG}
-export MKCERT_VERSION=1.3.0 # https://github.com/FiloSottile/mkcert/releases
+export MKCERT_VERSION=1.4.0 # https://github.com/FiloSottile/mkcert/releases
 export PUBLIC_HOSTNAME=$(curl http://169.254.169.254/latest/meta-data/public-hostname)
 export IP_ADDRESS=$(echo $(hostname -I) | awk '{print $1;}')
-
-# Add Sourcegraph specific motd
-cat > /etc/update-motd.d/99-one-click <<EOL
-#!/bin/sh
-#
-# Configured as part of the DigitalOcean 1-Click Image build process
-
-PUBLIC_HOSTNAME=$(curl http://169.254.169.254/latest/meta-data/public-hostname)
-cat <<EOF
-
-********************************************************************************
-
-Welcome to your Sourcegraph instance.
-
-For help and more information, visit https://docs.sourcegraph.com/
-
-## Accessing Sourcegraph
-
-Sourcegraph is running as the sourcegraph/server Docker container with two different access points:
- - Sourcegraph web app: https://${PUBLIC_HOSTNAME}
- - Sourcegraph management console: https://${PUBLIC_HOSTNAME}:2633
-
-## Controlling Sourcegraph
-
-There are four scripts in the /root directory for controlling Sourcegraph:
- - sourcegraph-start
- - sourcegraph-stop
- - sourcegraph-restart
- - sourcegraph-upgrade
-
-## Server resources
-
- - Sourcegraph configuration files are in /etc/sourcegraph
- - Sourcegraph data files are in /var/opt/sourcegraph
-
-## PostgreSQL access
-
-Access the PostgreSQL db inside the Docker container by running: docker container exec -it sourcegraph psql -U postgres sourcegraph
-
----
-
-To delete this message of the day: rm -rf $(readlink -f ${0})
-
-********************************************************************************
-EOF
-EOL
-chmod +x /etc/update-motd.d/99-one-click
-update-motd
 
 # Update system
 yum clean all
@@ -70,31 +22,28 @@ amazon-linux-extras install docker
 yum install -y \
     docker \
     git \
-    make \
-    nano
-
-# Install Docker Compose
-curl -L "https://github.com/docker/compose/releases/download/1.24.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-chmod +x /usr/local/bin/docker-compose
+    telnet \
+    httpd-tools \
+    nano \
 
 # Start docker service now and on boot
 systemctl enable --now --no-block docker
 
 # Create the required Sourcegraph directories
 mkdir -p ${SOURCEGRAPH_CONFIG}/management
+mkdir -p ${SOURCEGRAPH_CONFIG}/cert
 mkdir -p ${SOURCEGRAPH_DATA}
 
 # Install mkcert and generate root CA, certificate and key 
-wget https://github.com/FiloSottile/mkcert/releases/download/v1.3.0/mkcert-v1.3.0-linux-amd64 -O /usr/local/bin/mkcert
+wget https://github.com/FiloSottile/mkcert/releases/download/v${MKCERT_VERSION}/mkcert-v${MKCERT_VERSION}-linux-amd64 -O /usr/local/bin/mkcert
 chmod a+x /usr/local/bin/mkcert
+ln -s /usr/local/bin/mkcert /usr/sbin/mkcert
 
+# Generate self-signed certificate and key
 mkcert -install
-mkcert -cert-file ${SOURCEGRAPH_CONFIG}/sourcegraph.crt -key-file ${SOURCEGRAPH_CONFIG}/sourcegraph.key ${PUBLIC_HOSTNAME}
+mkcert -cert-file ${SOURCEGRAPH_CONFIG}/cert/sourcegraph.crt -key-file ${SOURCEGRAPH_CONFIG}/cert/sourcegraph.key ${PUBLIC_HOSTNAME}
 
-
-#
-# Configure the nginx.conf file for SSL.
-#
+# Configure NGINX file for TLS
 cat > ${SOURCEGRAPH_CONFIG}/nginx.conf <<EOL
 # From https://github.com/sourcegraph/sourcegraph/blob/master/cmd/server/shared/assets/nginx.conf
 # You can adjust the configuration to add additional TLS or HTTP features.
@@ -112,6 +61,11 @@ events {
 
 http {
     server_tokens off;
+
+    # SAML redirect response headers are sometimes large
+    proxy_buffer_size           128k;
+    proxy_buffers               8 256k;
+    proxy_busy_buffers_size     256k;  
 
     # Do not remove. The contents of sourcegraph_http.conf can change between
     # versions and may include improvements to the configuration.
@@ -136,8 +90,8 @@ http {
         include nginx/sourcegraph_server.conf;
 
         listen 7443 ssl http2 default_server;        
-        ssl_certificate         sourcegraph.crt;
-        ssl_certificate_key     sourcegraph.key;
+        ssl_certificate         cert/sourcegraph.crt;
+        ssl_certificate_key     cert/sourcegraph.key;
 
         location / {
             proxy_pass http://backend;
@@ -145,6 +99,11 @@ http {
             proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
             proxy_set_header X-Forwarded-Proto \$scheme;
         }
+
+        # SAML redirect response headers are sometimes large
+        proxy_buffer_size           128k;
+        proxy_buffers               8 256k;
+        proxy_busy_buffers_size     256k;        
 
         location '/.well-known/acme-challenge' {
             default_type "text/plain";
@@ -154,14 +113,12 @@ http {
 }
 EOL
 
-
-
 # Use the same certificate for the management console
-cp ${SOURCEGRAPH_CONFIG}/sourcegraph.crt ${SOURCEGRAPH_CONFIG}/management/cert.pem
-cp ${SOURCEGRAPH_CONFIG}/sourcegraph.key ${SOURCEGRAPH_CONFIG}/management/key.pem
+cp ${SOURCEGRAPH_CONFIG}/cert/sourcegraph.crt ${SOURCEGRAPH_CONFIG}/management/cert.pem
+cp ${SOURCEGRAPH_CONFIG}/cert/sourcegraph.key ${SOURCEGRAPH_CONFIG}/management/key.pem
 
 # Zip the CA Root key and certificate for easy downloading
-sudo zip -j ${USER_HOME}/sourcegraph-root-ca.zip ${SOURCEGRAPH_CONFIG}/root*
+sudo zip -j ${USER_HOME}/sourcegraph-root-ca.zip ${SOURCEGRAPH_CONFIG}/cert/*
 sudo chown ec2-user ${USER_HOME}/sourcegraph-root-ca.zip
 
 cat > ${USER_HOME}/sourcegraph-start <<EOL
@@ -193,6 +150,7 @@ docker container run \\
     -p 80:7080 \\
     -p 443:7443 \\
     -p 2633:2633 \\
+    -p 127.0.0.1:3370:3370 \\
     \\
     -v ${SOURCEGRAPH_CONFIG}:${SOURCEGRAPH_CONFIG} \\
     -v ${SOURCEGRAPH_DATA}:${SOURCEGRAPH_DATA} \\
@@ -231,3 +189,53 @@ ${USER_HOME}/sourcegraph-start
 # In case this script is used to generate a AWS marketplace image, truncate the `global_state` 
 # db table so a unique site_id will be generated upon launch.
 docker container exec -it sourcegraph psql -U postgres sourcegraph --command "DELETE FROM global_state WHERE 1=1;"
+
+
+# Add Sourcegraph specific motd
+cat > /etc/update-motd.d/99-one-click <<EOL
+#!/bin/sh
+#
+PUBLIC_HOSTNAME=$(curl http://169.254.169.254/latest/meta-data/public-hostname)
+cat <<EOF
+
+********************************************************************************
+
+Welcome to your Sourcegraph instance.
+
+For help and more information, visit https://docs.sourcegraph.com/
+
+## Accessing Sourcegraph
+
+Sourcegraph is running as the sourcegraph/server Docker container with two different access points:
+ - Web app: https://${PUBLIC_HOSTNAME}
+ - Management console: https://${PUBLIC_HOSTNAME}:2633
+ - Grafana dashboards: https://127.0.0.1:3370 (requires SSH tunnel as access is only exposed to localhost)
+
+## Controlling Sourcegraph
+
+There are four scripts in the /root directory for controlling Sourcegraph:
+ - sourcegraph-start
+ - sourcegraph-stop
+ - sourcegraph-restart
+ - sourcegraph-upgrade
+
+## Server resources
+
+ - Sourcegraph configuration files are in /etc/sourcegraph
+ - Sourcegraph data files are in /var/opt/sourcegraph
+
+## PostgreSQL access
+
+Access the PostgreSQL db inside the Docker container by running: docker container exec -it sourcegraph psql -U postgres sourcegraph
+
+---
+
+For support, log an issue at https://github.com/sourcegraph/deploy-sourcegraph-aws/issues/new or email support@sourcegraph.com.
+
+To delete this message of the day: rm -rf $(readlink -f ${0})
+
+********************************************************************************
+EOF
+EOL
+chmod +x /etc/update-motd.d/99-one-click
+update-motd

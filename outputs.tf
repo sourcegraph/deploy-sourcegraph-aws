@@ -1,19 +1,19 @@
-output "Server" {
+output "server" {
   value = "${format("https://%s/", aws_instance.this.public_dns)}"
 }
 
-output "IP address" {
+output "ip-address" {
   value = "${aws_instance.this.public_ip}"
 }
 
-output "Management (critical configuration) console" {
+output "management-console" {
   value = "${format("https://%s:2633/", aws_instance.this.public_dns)}"
 }
 
-output "SSH" {
+output "ssh" {
   value = "${format("ssh ec2-user@%s", aws_instance.this.public_dns)}"
 }
 
-output "Command to have your browser trust the self-signed certificate" {
+output "trust-self-signed-cert" {
   value = "${format("scp ec2-user@%s", aws_instance.this.public_dns)}:~/sourcegraph-root-ca.zip ./ && unzip sourcegraph-root-ca.zip && mv ./rootCA* \"$(mkcert -CAROOT)\" && mkcert -install"
 }

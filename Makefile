@@ -8,7 +8,7 @@ init:
 	terraform init -upgrade
 
 validate:
-	terraform validate -var-file terraform.tfvars
+	terraform validate
 
 plan: validate
 	terraform plan -var-file terraform.tfvars

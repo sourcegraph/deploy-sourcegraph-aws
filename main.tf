@@ -58,6 +58,9 @@ resource "aws_security_group" "this" {
   name = "${var.app_name}-sg"
   description = "Allow all inbound traffic on 80 and 443"
   vpc_id = "${local.vpc_id}"
+    tags = {
+      Name = "${var.app_name}-sg"
+    }
 
   ingress {
     from_port = 22
@@ -106,10 +109,6 @@ resource "aws_security_group" "this" {
     cidr_blocks = [
       "0.0.0.0/0"]
   }
-
-  tags {
-    Name = "${var.app_name}-sg"
-  }
 }
 
 
@@ -145,20 +144,20 @@ resource "aws_instance" "this" {
   instance_type = "${var.instance_type}"
   vpc_security_group_ids = [
     "${aws_security_group.this.id}"]
-  subnet_id = "${coalesce(var.subnet_id, element(data.aws_subnet_ids.this.ids, 0))}"
+  subnet_id = "${var.subnet_id}"
   key_name = "${var.key_name}"
 
   iam_instance_profile = "${aws_iam_instance_profile.this.name}"
 
   root_block_device {
-    volume_size = 200
+    volume_size = 240
     volume_type = "gp2"
     delete_on_termination = "${var.delete_root_volume_on_termination}"
   }
   
   user_data = "${file("resources/user-data.sh")}"
 
-  tags {
+  tags = {
     Name = "${var.app_name}"
   }
 }
