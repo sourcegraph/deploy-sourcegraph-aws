@@ -21,7 +21,7 @@ locals {
 
 # We need the list of availability zones if a value for the  `subnet_id` var was not supplied.
 data "aws_subnet_ids" "this" {
-  vpc_id = "${local.vpc_id}"
+  vpc_id = local.vpc_id
 }
 
 # Get the latest Amazon  Linux 2 AMI
@@ -57,7 +57,7 @@ data "aws_ami" "this" {
 resource "aws_security_group" "this" {
   name = "${var.app_name}-sg"
   description = "Allow all inbound traffic on 80 and 443"
-  vpc_id = "${local.vpc_id}"
+  vpc_id = local.vpc_id
     tags = {
       Name = "${var.app_name}-sg"
     }
@@ -119,12 +119,12 @@ resource "aws_security_group" "this" {
 resource "aws_iam_role" "this" {
   name = "${var.app_name}-role"
 
-  assume_role_policy = "${file("resources/iam-policy-instance-assume-role.json")}"
+  assume_role_policy = file("resources/iam-policy-instance-assume-role.json")
 }
 
 resource "aws_iam_instance_profile" "this" {
   name = "${var.app_name}-instance-profile"
-  role = "${aws_iam_role.this.name}"
+  role = aws_iam_role.this.name
 }
 
 
@@ -134,28 +134,28 @@ resource "aws_iam_instance_profile" "this" {
 
 # Create the key pair if a value for `public_key` was supplied
 resource "aws_key_pair" "this" {
-  count = "${var.public_key == "" ? 0 : 1}"
-  key_name   = "${var.key_name}"
-  public_key = "${var.public_key}"
+  count = var.public_key == "" ? 0 : 1
+  key_name   = var.key_name
+  public_key = var.public_key
 }
 
 resource "aws_instance" "this" {
-  ami = "${data.aws_ami.this.id}"
-  instance_type = "${var.instance_type}"
+  ami = data.aws_ami.this.id
+  instance_type = var.instance_type
   vpc_security_group_ids = [
     "${aws_security_group.this.id}"]
-  subnet_id = "${var.subnet_id}"
-  key_name = "${var.key_name}"
+  subnet_id = var.subnet_id
+  key_name = var.key_name
 
-  iam_instance_profile = "${aws_iam_instance_profile.this.name}"
+  iam_instance_profile = aws_iam_instance_profile.this.name
 
   root_block_device {
     volume_size = 240
     volume_type = "gp2"
-    delete_on_termination = "${var.delete_root_volume_on_termination}"
+    delete_on_termination = var.delete_root_volume_on_termination
   }
   
-  user_data = "${file("resources/user-data.sh")}"
+  user_data = file("resources/user-data.sh")
 
   tags = {
     Name = "${var.app_name}"

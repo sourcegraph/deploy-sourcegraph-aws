@@ -1,5 +1,5 @@
 SHELL := /bin/bash
-HOSTNAME=$(shell make output | grep "Server =" | sed -n 's/.*https:\/\/\(.*\)\//\1/p') # ]macOS users will need to `brew install coreutils` to get the `timeout` binary
+HOSTNAME=$(shell make output | grep "server =" | sed -n 's/.*https:\/\/\(.*\)\//\1/p') # ]macOS users will need to `brew install coreutils` to get the `timeout` binary
 URL="https://$(HOST_PORT)/"
 
 deploy: init validate plan apply sourcegraph
@@ -24,5 +24,5 @@ output:
 
 sourcegraph:
 	@echo "Waiting for Sourcegraph to be ready..."
-	@../bin/wait-for-it.sh -t 240 -q -h $(HOSTNAME) -p 443	
+	@./bin/wait-for-it.sh -t 240 -q -h $(HOSTNAME) -p 443	
 	@echo "Ready at https://$(HOSTNAME)/"
