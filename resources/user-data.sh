@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 
-export SOURCEGRAPH_VERSION=3.12.4
+export SOURCEGRAPH_VERSION=3.12.5
 export USER_HOME=/home/ec2-user
 export SOURCEGRAPH_CONFIG=/etc/sourcegraph
 export SOURCEGRAPH_DATA=/var/opt/sourcegraph
 export PATH=$PATH:/usr/local/bin
 export DEBIAN_FRONTEND=noninteractive
 export CAROOT=${SOURCEGRAPH_CONFIG}
-export MKCERT_VERSION=1.4.0 # https://github.com/FiloSottile/mkcert/releases
+export MKCERT_VERSION=1.4.1 # https://github.com/FiloSottile/mkcert/releases
 export PUBLIC_HOSTNAME=$(curl http://169.254.169.254/latest/meta-data/public-hostname)
 export IP_ADDRESS=$(echo $(hostname -I) | awk '{print $1;}')
 
@@ -113,10 +113,6 @@ http {
 }
 EOL
 
-# Use the same certificate for the management console
-cp ${SOURCEGRAPH_CONFIG}/cert/sourcegraph.crt ${SOURCEGRAPH_CONFIG}/management/cert.pem
-cp ${SOURCEGRAPH_CONFIG}/cert/sourcegraph.key ${SOURCEGRAPH_CONFIG}/management/key.pem
-
 # Zip the CA Root key and certificate for easy downloading
 sudo zip -j ${USER_HOME}/sourcegraph-root-ca.zip ${SOURCEGRAPH_CONFIG}/cert/*
 sudo chown ec2-user ${USER_HOME}/sourcegraph-root-ca.zip
@@ -149,7 +145,7 @@ docker container run \\
     \\
     -p 80:7080 \\
     -p 443:7443 \\
-    -p 2633:2633 \\
+    -p 127.0.0.1:8080:8080 \\
     -p 127.0.0.1:3370:3370 \\
     \\
     -v ${SOURCEGRAPH_CONFIG}:${SOURCEGRAPH_CONFIG} \\
@@ -208,7 +204,6 @@ For help and more information, visit https://docs.sourcegraph.com/
 
 Sourcegraph is running as the sourcegraph/server Docker container with two different access points:
  - Web app: https://${PUBLIC_HOSTNAME}
- - Management console: https://${PUBLIC_HOSTNAME}:2633
  - Grafana dashboards: https://127.0.0.1:3370 (requires SSH tunnel as access is only exposed to localhost)
 
 ## Controlling Sourcegraph

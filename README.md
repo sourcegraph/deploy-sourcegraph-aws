@@ -5,7 +5,7 @@ This Terraform plan deploys Sourcegraph to an EC2 instance with SSL using a self
 This plan will create:
 
 - An EC2 instance
-- Security group with inbound ports `22`, `80`, `443`, and `2633` (for the management console) exposed
+- Security group with inbound ports `22`, `80`, and `443`
 - IAM role and and IAM instance profile
 - Depending upon configuration, a `key pair` (see [plan configuration](#terraform-plan-configuration))
 
@@ -90,7 +90,7 @@ If the instance has no public IP address, get the subnet id the instance belongs
 
 1. VPC
 1. Subnets
-1. Select the subnet 
+1. Select the subnet
 1. Actions: Modify auto-assign IP settings
 1. check "Auto-assign IPv4" and save
 1. Run `make destroy` to remove the current instance
