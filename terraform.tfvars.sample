@@ -8,7 +8,8 @@
 ################
 
 # You will need to specify the `vpc_id` if the region you're deploying
-# to does not have a default VPC.
+# to does not have a default VPC. 
+# You can re-create a default VPC by following the instructions at https://docs.aws.amazon.com/vpc/latest/userguide/default-vpc.html
 #vpc_id = ""
 #subnet_id = ""
 
