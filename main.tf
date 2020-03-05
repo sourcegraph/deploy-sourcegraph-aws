@@ -24,7 +24,7 @@ data "aws_subnet_ids" "this" {
   vpc_id = local.vpc_id
 }
 
-# Get the latest Amazon  Linux 2 AMI
+# Get the latest Amazon Linux 2 AMI
 data "aws_ami" "this" {
   most_recent = true
   owners = ["amazon"]
@@ -147,7 +147,7 @@ resource "aws_instance" "this" {
     delete_on_termination = var.delete_root_volume_on_termination
   }
   
-  user_data = file("resources/user-data.sh")
+  user_data = file("resources/amazon-linux2.sh")
 
   tags = {
     Name = "${var.app_name}"

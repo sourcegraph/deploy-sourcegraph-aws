@@ -1,3 +1,6 @@
+output "instance_id" {
+  value = "${aws_instance.this.id}"
+}
 output "server" {
   value = "${format("https://%s/", aws_instance.this.public_dns)}"
 }
