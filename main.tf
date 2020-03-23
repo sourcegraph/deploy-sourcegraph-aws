@@ -111,7 +111,7 @@ resource "aws_security_group" "this" {
 resource "aws_iam_role" "this" {
   name = "${var.app_name}-role"
 
-  assume_role_policy = file("resources/iam-policy-instance-assume-role.json")
+  assume_role_policy = file("${path.module}/resources/iam-policy-instance-assume-role.json")
 }
 
 resource "aws_iam_instance_profile" "this" {
@@ -147,7 +147,7 @@ resource "aws_instance" "this" {
     delete_on_termination = var.delete_root_volume_on_termination
   }
   
-  user_data = file("resources/amazon-linux2.sh")
+  user_data = file("${path.module}/resources/amazon-linux2.sh")
 
   tags = {
     Name = "${var.app_name}"

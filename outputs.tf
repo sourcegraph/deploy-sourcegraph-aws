@@ -1,11 +1,11 @@
 output "instance_id" {
   value = "${aws_instance.this.id}"
 }
-output "server" {
+output "server_url" {
   value = "${format("https://%s/", aws_instance.this.public_dns)}"
 }
 
-output "ip-address" {
+output "server_ip" {
   value = "${aws_instance.this.public_ip}"
 }
 
