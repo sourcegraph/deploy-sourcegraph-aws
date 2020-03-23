@@ -168,7 +168,9 @@ docker container logs sourcegraph -f
 EOL
 
 chmod +x /usr/local/bin/sourcegraph-*
-/usr/local/bin/sourcegraph-start
+ln -s /usr/local/bin/sourcegraph-* /usr/sbin/
+
+sourcegraph-start
 
 # In case this script is used to generate a AWS marketplace image, truncate the `global_state` 
 # db table so a unique site_id will be generated upon launch.
