@@ -140,25 +140,24 @@ cat > /usr/local/bin/sourcegraph-stop <<EOL
 #!/usr/bin/env bash
 
 echo "[info]:  Stopping Sourcegraph"
-docker container stop sourcegraph > /dev/null 2>&1 docker container rm sourcegraph 
+docker container stop sourcegraph > /dev/null 2>&1
+docker container rm sourcegraph > /dev/null 2>&1
 EOL
 
 cat > /usr/local/bin/sourcegraph-upgrade <<EOL
 #!/usr/bin/env bash
 
-./sourcegraph-stop
-
 read -p "Sourcegraph version to upgrade to: " VERSION
-sed -i -E "s/SOURCEGRAPH_VERSION=[0-9\.]+/SOURCEGRAPH_VERSION=\$VERSION/g" ./sourcegraph-start
+sed -i -E "s/SOURCEGRAPH_VERSION=[0-9\.]+/SOURCEGRAPH_VERSION=\$VERSION/g" /usr/local/bin/sourcegraph-start
 
-./sourcegraph-start
+sourcegraph-restart
 EOL
 
 cat > /usr/local/bin/sourcegraph-restart <<EOL
 #!/usr/bin/env bash
 
-./sourcegraph-stop
-./sourcegraph-start
+sourcegraph-stop
+sourcegraph-start
 EOL
 
 cat > /usr/local/bin/sourcegraph-logs <<EOL
@@ -199,13 +198,13 @@ Sourcegraph is running as the sourcegraph/server Docker container with two diffe
 
 ## Controlling Sourcegraph
 
-There are 5 scripts in the /root directory for controlling Sourcegraph:
+There are 5 commands available for controlling Sourcegraph
  - sourcegraph-start
  - sourcegraph-stop
  - sourcegraph-restart
  - sourcegraph-upgrade
  - sourcegraph-logs
- 
+
 ## Server resources
 
  - Sourcegraph configuration files are in /etc/sourcegraph
