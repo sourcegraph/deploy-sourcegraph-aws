@@ -11,3 +11,5 @@
 .idea
 aws_auth.sh
 sourcegraph-root-ca.zip
+
+**/*.dhall
