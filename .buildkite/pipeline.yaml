@@ -8,5 +8,5 @@
 # https://sourcegraph.com/github.com/sourcegraph/infrastructure/-/blob/buildkite/kubernetes/buildkite-agent/buildkite-agent.Deployment.yaml
 
 steps:
-  - label: ':checkov:'
+  - label: ':lock: security - checkov'
     command: .buildkite/ci-checkov.sh
