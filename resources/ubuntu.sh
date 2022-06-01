@@ -41,7 +41,7 @@ mkcert -cert-file ${SOURCEGRAPH_CONFIG}/sourcegraph.crt -key-file ${SOURCEGRAPH_
 
 # Configure NGINX file for TLS
 cat > ${SOURCEGRAPH_CONFIG}/nginx.conf <<EOL
-# From https://github.com/sourcegraph/sourcegraph/blob/master/cmd/server/shared/assets/nginx.conf
+# From https://github.com/sourcegraph/sourcegraph/blob/main/cmd/server/shared/assets/nginx.conf
 # You can adjust the configuration to add additional TLS or HTTP features.
 # Read more at https://docs.sourcegraph.com/admin/nginx
 
