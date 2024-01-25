@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-export SOURCEGRAPH_VERSION=5.2.6
+export SOURCEGRAPH_VERSION=5.2.7
 export SOURCEGRAPH_CONFIG=/etc/sourcegraph
 export SOURCEGRAPH_DATA=/var/opt/sourcegraph
 export PATH=$PATH:/usr/local/bin
