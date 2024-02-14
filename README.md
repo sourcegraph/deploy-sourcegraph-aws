@@ -95,3 +95,4 @@ If the instance has no public IP address, get the subnet id the instance belongs
 1. check "Auto-assign IPv4" and save
 1. Run `make destroy` to remove the current instance
 1. Run `make deploy` again to get a public hostname and IP
+Hello World
